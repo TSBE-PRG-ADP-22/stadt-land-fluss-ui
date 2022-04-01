@@ -1,8 +1,12 @@
 import React from 'react';
+import Button from 'react-bootstrap/Button';
+
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div>
+      <Button>Test</Button>
+    </div>
   );
 };
 
