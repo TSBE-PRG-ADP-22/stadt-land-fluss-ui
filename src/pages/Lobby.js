@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -7,17 +8,18 @@ import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Table from 'react-bootstrap/Table';
 import { HubConnectionBuilder } from "@microsoft/signalr";
-import { Navigate } from 'react-router-dom';
+import useLocalStorage from '../hooks/useLocalStorage';
 
 const Lobby = () => {
-  const [gameLink] = useState("https://foo.bar/lobby/xyz")
+  const [lobby] = useLocalStorage('lobby');
+  console.log('lobby', lobby);
 
   const [ connection, setConnection ] = useState(null);
   const [ users, setUsers ] = useState([]);
 
   useEffect(() => {
     const newConnection = new HubConnectionBuilder()
-      .withUrl('https://stadt-land-fluss-api.herokuapp.com')
+      .withUrl(`${process.env.REACT_APP_API}/lobby-hub`)
       .withAutomaticReconnect()
       .build();
 
@@ -26,7 +28,7 @@ const Lobby = () => {
 
   useEffect(() => {
     if (connection) {
-        connection.start()
+        connection.start({ withCredentials: false })
             .then(() => {
                 console.log('Connected!');
 
@@ -49,8 +51,8 @@ const Lobby = () => {
         <Col>
           <h2>Einladen</h2>
           <InputGroup className="mb-3" id="gameLink">
-            <FormControl defaultValue={gameLink} disabled />
-            <Button onClick={() =>  navigator.clipboard.writeText(gameLink)}>Kopieren</Button>
+            <FormControl defaultValue={`${process.env.REACT_APP_FE}/lobby/${lobby.id}`} disabled />
+            <Button onClick={() =>  navigator.clipboard.writeText(`${process.env.REACT_APP_FE}/lobby/${lobby.id}`)}>Kopieren</Button>
           </InputGroup>
         </Col>
       </Row>

@@ -1,15 +1,10 @@
 import fetchy from './fetchy';
 
-const createGameAPI = async(gameId, [categories], rounds, timelimit, status) =>
+export const createGameAPI = async (categories, rounds, timelimit) =>
   fetchy(`/lobby/`, 'POST', {
-    id,
-    categories: [categories],
+    categories,
     rounds,
     timelimit,
-    status
   });
-const joinGame = async(gameId, name) =>
-  fetchy(`/lobby/${id}/user`, 'POST', {
-    id,
-    name
-  });
+
+export const joinGame = async (gameId) => fetchy(`/lobby/${gameId}/user`, 'POST');
