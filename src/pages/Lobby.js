@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useState} from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,15 +8,16 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import Table from 'react-bootstrap/Table';
 
 const Lobby = () => {
+  const [gameLink] = useState("https://foo.bar/lobby/xyz")
   return (
     <Container>
       <h1>Lobby</h1>
       <Row className="mb-4">
         <Col>
           <h2>Einladen</h2>
-          <InputGroup className="mb-3">
-            <FormControl defaultValue="https://foo.bar/lobby/xyz" disabled />
-            <Button>Kopieren</Button>
+          <InputGroup className="mb-3" id="gameLink">
+            <FormControl defaultValue={gameLink} disabled />
+            <Button onClick={() =>  navigator.clipboard.writeText(gameLink)}>Kopieren</Button>
           </InputGroup>
         </Col>
       </Row>

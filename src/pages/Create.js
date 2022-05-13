@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -8,7 +8,9 @@ import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import CategoryToast from '../components/CategoryToast/CategoryToast';
 
+
 const Create = () => {
+  const [isTimeLimitActive, setIsTimeLimitActive] = useState(false)
   return (
     <Container>
       <Form>
@@ -39,11 +41,14 @@ const Create = () => {
         <Row className="mb-4">
           <Col>
             <h2>Zeitlimite</h2>
-            <Form.Check type="switch" id="custom-switch" label="Zeitlimite aktivieren" />
-            <Form.Group>
-              <Form.Label htmlFor="timelimit">Minuten pro Runde:</Form.Label>
-              <Form.Control id="timelimit" type="number" defaultValue="3" />
-            </Form.Group>
+            <Form.Check type="switch" id="custom-switch" label="Zeitlimite aktivieren" onClick={() => setIsTimeLimitActive(!isTimeLimitActive)} />
+            {isTimeLimitActive && (
+              <Form.Group id="timelimitvlaues">
+                <Form.Label htmlFor="timelimit" >Minuten pro Runde:</Form.Label>
+                <Form.Control id="timelimit" type="number" defaultValue="3" />
+              </Form.Group>
+            )}
+
           </Col>
         </Row>
         <Row>
@@ -55,5 +60,4 @@ const Create = () => {
     </Container>
   );
 };
-
 export default Create;
