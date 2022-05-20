@@ -3,6 +3,7 @@ ENV NODE_ENV production
 WORKDIR /app
 COPY build /usr/share/nginx/html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
+RUN /bin/sed -i "s/listen 80/listen ${PORT}/" /etc/nginx/sites-available/default.conf
 
 EXPOSE 80
 EXPOSE 443
