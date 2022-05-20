@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Container from 'react-bootstrap/Container';
-import { joinGame } from '../api/lobbyAPI';
+import { joinGameAPI } from '../api/lobbyAPI';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 const Lobby = () => {
@@ -12,7 +12,7 @@ const Lobby = () => {
 
   useEffect(() => {
     if (id) {
-      joinGame(id).then(({status, data}) => {
+      joinGameAPI(id).then(({status, data}) => {
         if(status === 200) {
           setLobby(data);
           navigate('/lobby');
@@ -21,7 +21,7 @@ const Lobby = () => {
         }
       });
     }
-  }, [id, navigate, setLobby]);
+  }, [id]);
 
   return (
     <Container>

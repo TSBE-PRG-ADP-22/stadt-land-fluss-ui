@@ -7,7 +7,7 @@ import Col from 'react-bootstrap/Col';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
-import { joinGame } from '../api/lobbyAPI';
+import { joinGameAPI } from '../api/lobbyAPI';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 const Home = () => {
@@ -18,7 +18,7 @@ const Home = () => {
   const [lobby, setLobby] = useLocalStorage('lobby');
 
   const joinGameHandler = () => {
-    joinGame(gameId).then(({status, data}) => {
+    joinGameAPI(gameId).then(({status, data}) => {
       if(status === 200) {
         setLobby(data);
         navigate('/lobby');

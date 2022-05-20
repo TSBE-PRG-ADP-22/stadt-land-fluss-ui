@@ -7,42 +7,62 @@ import Button from 'react-bootstrap/Button';
 import FormControl from 'react-bootstrap/FormControl';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Table from 'react-bootstrap/Table';
-import { HubConnectionBuilder } from "@microsoft/signalr";
+import { getLobbyConnectionAPI } from '../api/lobbyAPI';
 import useLocalStorage from '../hooks/useLocalStorage';
 
 const Lobby = () => {
-  const [lobby] = useLocalStorage('lobby');
-  console.log('lobby', lobby);
-
-  const [ connection, setConnection ] = useState(null);
-  const [ users, setUsers ] = useState([]);
+  const [lobby, setLobby] = useLocalStorage('lobby');
+  const [isConnected, setIsConnected] = useState(false);
+  const [connection, setConnection] = useState(null);
+  const [newUser, setNewUser] = useState({});
 
   useEffect(() => {
-    const newConnection = new HubConnectionBuilder()
-      .withUrl(`${process.env.REACT_APP_API}/lobby-hub`)
-      .withAutomaticReconnect()
-      .build();
-
+    const newConnection = getLobbyConnectionAPI();
     setConnection(newConnection);
   }, []);
 
   useEffect(() => {
     if (connection) {
-        connection.start({ withCredentials: false })
-            .then(() => {
-                console.log('Connected!');
+      connection
+        .start({ withCredentials: false })
+        .then(() => {
+          const currentUser = lobby.users.find((user) => user.isCurrentUser);
+          if (!isConnected) {
+            connection.invoke('join-lobby', currentUser.id, lobby.id);
+            setIsConnected(true);
+          }
+          console.log('currentUser', currentUser);
 
-                connection.on('user-added', message => {
-                  // add user to list
-                });
+          connection.on('user-added', (invokedUser) => {
+            console.log('user-added');
+            console.log('invokedUser', invokedUser);
+            if (!lobby.users.some((user) => user.id === invokedUser.id)) {
+              // const users = [...lobby.users];
+              // users.push(invokedUser);
+              // setLobby({ ...lobby, users });
+              setNewUser(invokedUser)
+            }
+            console.log('==============');
+          });
 
-                connection.on('game-start', message => {
-                  return <Navigate to='/game' />
-                });
-            })
-            .catch(e => console.log('Connection failed: ', e));
+          connection.on('game-start', (message) => {
+            return <Navigate to="/game" />;
+          });
+        })
+        .catch((e) => console.log('Connection failed: ', e));
     }
-  }, [connection]);
+  }, [connection, lobby, setLobby, isConnected]);
+
+  useEffect(() => {
+    console.log('LOBBY', lobby);
+    console.log('==========================');
+  }, [lobby]);
+
+  useEffect(() => {
+    if (newUser) {
+      setLobby({ ...lobby, users: [ ...lobby.users, newUser ] });
+    }
+  }, [newUser]);
 
   return (
     <Container>
@@ -52,7 +72,9 @@ const Lobby = () => {
           <h2>Einladen</h2>
           <InputGroup className="mb-3" id="gameLink">
             <FormControl defaultValue={`${process.env.REACT_APP_FE}/lobby/${lobby.id}`} disabled />
-            <Button onClick={() =>  navigator.clipboard.writeText(`${process.env.REACT_APP_FE}/lobby/${lobby.id}`)}>Kopieren</Button>
+            <Button onClick={() => navigator.clipboard.writeText(`${process.env.REACT_APP_FE}/lobby/${lobby.id}`)}>
+              Kopieren
+            </Button>
           </InputGroup>
         </Col>
       </Row>
@@ -67,9 +89,9 @@ const Lobby = () => {
             </thead>
             <tbody>
               {/* TODO: Map real players */}
-              {['Kieran', 'Jan', 'Björn'].map((player, index) => (
+              {lobby.users.map((player, index) => (
                 <tr key={index}>
-                  <td>{player}</td>
+                  <td className={player.isCurrentUser ? 'bg-info bg-opacity-25 fw-bold' : ''}>{player.name}</td>
                 </tr>
               ))}
             </tbody>
