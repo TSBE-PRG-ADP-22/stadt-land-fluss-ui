@@ -16,10 +16,12 @@ jobs:
           node-version: 17.x
       - run: npm install
       - run: npm run build
-      - name: Build, Push and Release to Heroku
-        uses: akhileshns/heroku-deploy@v3.12.12
+      - name: Deploy to Heroku with Docker
+        uses: gonuit/heroku-docker-deploy@v1.3.3
         with:
           email: ${{ secrets.HEROKU_EMAIL }}
           heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
           heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-          appdir: "build"
+          dockerfile_name: Dockerfile
+          docker_options: "--no-cache"
+          process_type: web
