@@ -15,6 +15,9 @@ const Lobby = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [connection, setConnection] = useState(null);
   const [newUser, setNewUser] = useState({});
+  const [hasGameStarted, setHasGameStarted] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [currentLetter, setCurrentLetter] = useLocalStorage('currentLetter');
 
   useEffect(() => {
     const newConnection = getLobbyConnectionAPI();
@@ -31,38 +34,39 @@ const Lobby = () => {
             connection.invoke('join-lobby', currentUser.id, lobby.id);
             setIsConnected(true);
           }
-          console.log('currentUser', currentUser);
 
           connection.on('user-added', (invokedUser) => {
-            console.log('user-added');
-            console.log('invokedUser', invokedUser);
             if (!lobby.users.some((user) => user.id === invokedUser.id)) {
-              // const users = [...lobby.users];
-              // users.push(invokedUser);
-              // setLobby({ ...lobby, users });
               setNewUser(invokedUser)
             }
-            console.log('==============');
           });
 
-          connection.on('game-start', (message) => {
-            return <Navigate to="/game" />;
+          connection.on('round-started', (letter) => {
+            setCurrentLetter(letter)
+            setHasGameStarted(true);
           });
         })
         .catch((e) => console.log('Connection failed: ', e));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connection, lobby, setLobby, isConnected]);
 
   useEffect(() => {
-    console.log('LOBBY', lobby);
-    console.log('==========================');
-  }, [lobby]);
-
-  useEffect(() => {
-    if (newUser) {
+    if (newUser && newUser.id) {
       setLobby({ ...lobby, users: [ ...lobby.users, newUser ] });
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [newUser]);
+
+  const onStartGameHandler = () => {
+    if (connection) {
+      connection.invoke('game-start');
+    }
+  }
+
+  if (hasGameStarted) {
+    return <Navigate to="/game" />;
+  }
 
   return (
     <Container>
@@ -100,7 +104,7 @@ const Lobby = () => {
       <Row>
         <Col>
           {!!lobby.users.find(user => (user.isCurrentUser && user.admin)) && (
-            <Button>Jetzt Spielen</Button>
+            <Button onClick={onStartGameHandler}>Jetzt Spielen</Button>
           )}
         </Col>
       </Row>
