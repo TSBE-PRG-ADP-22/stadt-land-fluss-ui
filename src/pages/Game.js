@@ -78,7 +78,7 @@ const Game = () => {
           <h1>Spiel</h1>
           <h2>Info</h2>
           <p>
-            <b>Runde:</b> {lobby.rounds}
+            <b>Runde:</b> {lobby.round} / {lobby.rounds}
             <br />
             <b>Buchstabe:</b> {currentLetter}
           </p>
@@ -89,26 +89,12 @@ const Game = () => {
           <Row className="mb-4">
             <Col className="d-flex flex-column gap-3" id="gameValues">
               <h2>Kategorien</h2>
-              {/* {answers.map(({ answer, category }, index) => ( */}
               {lobby.categories.map((category, index) => (
                 <Form.Group key={index}>
                   <Form.Label htmlFor={category.name}>{category.name}:</Form.Label>
                   <Form.Control
                     id={category.name}
                     placeholder={`${currentLetter}...`}
-                    // value={answer}
-                    // onChange={(e) =>
-                    //   setAnswers((prevAnswers) =>
-                    //     prevAnswers.map((prevAnswer) =>
-                    //       prevAnswer.category.name === category.name
-                    //         ? {
-                    //             ...prevAnswer,
-                    //             answer: e.currentTarget.value,
-                    //           }
-                    //         : prevAnswer
-                    //     )
-                    //   )
-                    // }
                   />
                 </Form.Group>
               ))}
