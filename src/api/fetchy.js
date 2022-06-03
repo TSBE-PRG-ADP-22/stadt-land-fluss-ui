@@ -1,6 +1,6 @@
 const fetchy = async (endpoint, method, body) => {
 
-  const response = await fetch(`process.env.REACT_APP_API${endpoint}`, {
+  const response = await fetch(`${process.env.REACT_APP_API}${endpoint}`, {
     method: method,
     mode: 'cors',
     cache: 'no-cache',
