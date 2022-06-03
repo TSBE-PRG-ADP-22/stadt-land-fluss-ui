@@ -88,7 +88,6 @@ const Lobby = () => {
               </tr>
             </thead>
             <tbody>
-              {/* TODO: Map real players */}
               {lobby.users.map((player, index) => (
                 <tr key={index}>
                   <td className={player.isCurrentUser ? 'bg-info bg-opacity-25 fw-bold' : ''}>{player.name}</td>
@@ -100,8 +99,9 @@ const Lobby = () => {
       </Row>
       <Row>
         <Col>
-          {/* TODO: Button only visible for admin */}
-          <Button>Jetzt Spielen</Button>
+          {!!lobby.users.find(user => (user.isCurrentUser && user.admin)) && (
+            <Button>Jetzt Spielen</Button>
+          )}
         </Col>
       </Row>
     </Container>
