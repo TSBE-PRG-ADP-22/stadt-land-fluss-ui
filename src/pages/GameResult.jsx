@@ -10,7 +10,7 @@ import useLocalStorage from '../hooks/useLocalStorage';
 const GameResult = () => {
   const [lobby] = useLocalStorage('lobby');
   const [rankings] = useLocalStorage('rankings');
-  const sortedRanking = rankings?.sort((a, b) => a.points - b.points);
+  const sortedRanking = rankings?.sort((a, b) => b.points - a.points);
   const highestPoints = sortedRanking?.[0]?.points;
 
   window.localStorage.clear();
