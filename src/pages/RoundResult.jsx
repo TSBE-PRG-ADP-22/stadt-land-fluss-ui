@@ -14,6 +14,7 @@ const RoundResult = () => {
   // eslint-disable-next-line no-unused-vars
   const [currentLetter, setCurrentLetter] = useLocalStorage('currentLetter');
   const [usersRound] = useLocalStorage('usersRound');
+  const [rankings, setRankings] = useLocalStorage('rankings');
   const [isConnected, setIsConnected] = useState(false);
   const [connection, setConnection] = useState(null);
   const [hasNextRoundStarted, setHasNextRoundStarted] = useState(false);
@@ -40,6 +41,10 @@ const RoundResult = () => {
             setCurrentLetter(letter);
             setHasNextRoundStarted(true);
           });
+
+          connection.on("game-finished", ({ rankings: rankingsArray }) => {
+            setRankings(rankingsArray);
+          })
         })
         .catch((e) => console.log('Connection failed: ', e));
     }
@@ -55,8 +60,16 @@ const RoundResult = () => {
     setIsCurrentUserReadyForNextRound(true);
   };
 
+  if (!lobby) {
+    return <Navigate to="/" replace />;
+  }
+
   if (hasNextRoundStarted) {
     return <Navigate to="/game" replace />;
+  }
+
+  if (!!rankings) {
+    return <Navigate to="/results" replace />;
   }
 
   return (
@@ -115,7 +128,7 @@ const RoundResult = () => {
           {isCurrentUserReadyForNextRound ? (
             'Andere Spieler sind noch nicht so weit, bitte etwas Geduld...'
           ) : (
-            <Button onClick={onNextRoundHandler}>Nächste Runde</Button>
+            <Button onClick={onNextRoundHandler}>{lobby.rounds === lobby.round ? "Spiel beenden" : "Nächste Runde"}</Button>
           )}
         </Col>
       </Row>

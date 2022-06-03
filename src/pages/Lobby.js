@@ -68,6 +68,10 @@ const Lobby = () => {
     return <Navigate to="/game" replace />;
   }
 
+  if (!lobby) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <Container>
       <h1>Lobby</h1>

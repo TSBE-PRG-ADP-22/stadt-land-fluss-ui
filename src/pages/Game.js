@@ -71,6 +71,10 @@ const Game = () => {
     return <Navigate to="/round-result" replace />;
   }
 
+  if (!lobby) {
+    return <Navigate to="/" replace />;
+  }
+
   return (
     <Container>
       <Row className="mb-4">
