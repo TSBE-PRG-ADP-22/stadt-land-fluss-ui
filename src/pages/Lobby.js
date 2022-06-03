@@ -65,7 +65,7 @@ const Lobby = () => {
   }
 
   if (hasGameStarted) {
-    return <Navigate to="/game" />;
+    return <Navigate to="/game" replace />;
   }
 
   return (
